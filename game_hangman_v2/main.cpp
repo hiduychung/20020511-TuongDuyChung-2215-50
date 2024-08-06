@@ -2,14 +2,20 @@
 
 using namespace std;
 
-const string Word_list[] = {"cats","human","dog","Apple", "Bread", "Chair",
-                            "Dance", "Eagle", "Fruit", "Ghost", "House", "Igloo",
-                            "Joker", "Knife", "Lemon", "Magic", "Night", "Ocean",
-                            "Pizza", "Queen", "Radio", "Snake", "Tiger", "Uncle",
-                            "Voice", "Whale", "Zebra", "Angel", "Brave", "Crown",
-                            "Dream",
-};
-const int Word_count = sizeof(Word_list) / sizeof(string);
+vector <string> Word_list;
+void readWordsFromFile(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Error opening file!" << endl;
+        exit(1);
+    }
+    string word;
+    while (file >> word) {
+        Word_list.push_back(word);
+    }
+    file.close();
+}
+ int Word_count = 1;
 const string FIGURE[] = {
     "  -------- \n"
     "  |      | \n"
@@ -118,14 +124,24 @@ return (word.find_first_of(ch) != string::npos);
 };
 
 void displayResult(bool lost){
-    if(lost) cout<<FIGURE[7]<<"\n " <<"You lost!";
-    else cout<<"You won!";
+    if(lost) cout<<FIGURE[7]<<"\n " <<"You lost!"<<endl;
+    else cout<<"You won!"<<endl;
 };
 
 
 
 int main()
 {
+    readWordsFromFile("words.txt");
+    Word_count = Word_list.size();
+
+    int totalRounds = 0;
+    int totalWins = 0;
+    int totalLosses = 0;
+    char playAgain = 'y';
+
+while(playAgain == 'y' || playAgain == 'Y'){
+
     string secretWord = chooseWord();
     string guesseWord = string(secretWord.length(),'-');
     int badGuesseCount = 0;
@@ -140,7 +156,24 @@ int main()
 
     } while(badGuesseCount < 7 && guesseWord != secretWord);
 
-displayResult(badGuesseCount == 7);
+        if (guesseWord == secretWord) {
+            totalWins++;
+            displayResult(false);
+        } else {
+            totalLosses++;
+            displayResult(true);
+        }
+        totalRounds++;
+        cout << "Total Rounds: " << totalRounds << endl;
+        cout << "Total Wins: " << totalWins << endl;
+        cout << "Total Losses: " << totalLosses << endl;
+
+        cout << "Do you want to play again? (y/n): ";
+        cin >> playAgain;
+
+}
+
+
 
     return 0;
 };
